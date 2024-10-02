@@ -1,0 +1,464 @@
+{
+	"info": {
+		"_postman_id": "ad9dd9a8-b4f8-4555-b8d9-61f49f6b109d",
+		"name": "Automation BackEnd",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36276426"
+	},
+	"item": [
+		{
+			"name": "Get Users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"let jsonData = pm.response.json();",
+							"let ids = jsonData.map(item => item.id);",
+							"let randomId = ids[Math.floor(Math.random() * ids.length)];",
+							"pm.collectionVariables.set(\"randomId\", randomId);",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Response is an array\", function () {",
+							"    pm.expect(jsonData).to.be.an('array');",
+							"});",
+							"",
+							"pm.test(\"Each object in the array contains the expected attributes\", function () {",
+							"    jsonData.forEach(function (item) {",
+							"        pm.expect(item).to.have.property('id').that.is.a('number');",
+							"        pm.expect(item).to.have.property('name').that.is.a('string');",
+							"        pm.expect(item).to.have.property('username').that.is.a('string');",
+							"        pm.expect(item).to.have.property('email').that.is.a('string');",
+							"        pm.expect(item.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+							"",
+							"        pm.expect(item).to.have.property('address');",
+							"        pm.expect(item.address).to.have.property('street').that.is.a('string');",
+							"        pm.expect(item.address).to.have.property('suite').that.is.a('string');",
+							"        pm.expect(item.address).to.have.property('city').that.is.a('string');",
+							"        pm.expect(item.address).to.have.property('zipcode').that.is.a('string');",
+							"        pm.expect(item.address).to.have.property('geo');",
+							"        pm.expect(item.address.geo).to.have.property('lat').that.is.a('string');",
+							"        pm.expect(item.address.geo).to.have.property('lng').that.is.a('string');",
+							"",
+							"        pm.expect(item).to.have.property('phone').that.is.a('string');",
+							"        pm.expect(item).to.have.property('website').that.is.a('string');",
+							"",
+							"        pm.expect(item).to.have.property('company');",
+							"        pm.expect(item.company).to.have.property('name').that.is.a('string');",
+							"        pm.expect(item.company).to.have.property('catchPhrase').that.is.a('string');",
+							"        pm.expect(item.company).to.have.property('bs').that.is.a('string');",
+							"    });",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"packages": {},
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get Users by ID",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"The 'name' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('name');",
+							"    pm.expect(jsonData.name).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'username' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('username');",
+							"    pm.expect(jsonData.username).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'email' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('email');",
+							"    pm.expect(jsonData.email).to.be.a('string');",
+							"    pm.expect(jsonData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+							"});",
+							"",
+							"pm.test(\"The address contains the correct attributes\", function () {",
+							"    pm.expect(jsonData).to.have.property('address');",
+							"    pm.expect(jsonData.address).to.have.property('street').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('suite').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('city').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('zipcode').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('geo');",
+							"    pm.expect(jsonData.address.geo).to.have.property('lat').that.is.a('string');",
+							"    pm.expect(jsonData.address.geo).to.have.property('lng').that.is.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'phone' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('phone');",
+							"    pm.expect(jsonData.phone).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'website' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('website');",
+							"    pm.expect(jsonData.website).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'company' attribute contains the correct data\", function () {",
+							"    pm.expect(jsonData).to.have.property('company');",
+							"    pm.expect(jsonData.company).to.have.property('name').that.is.a('string');",
+							"    pm.expect(jsonData.company).to.have.property('catchPhrase').that.is.a('string');",
+							"    pm.expect(jsonData.company).to.have.property('bs').that.is.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'id' attribute is present and is a number\", function () {",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData.id).to.be.a('number');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/users/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{randomId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create User",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"pm.collectionVariables.set(\"randomZipcode\", Math.floor(10000 + Math.random() * 90000).toString());",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 201\", function () {",
+							"    pm.response.to.have.status(201);",
+							"});",
+							"",
+							"pm.test(\"The 'name' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('name');",
+							"    pm.expect(jsonData.name).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'username' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('username');",
+							"    pm.expect(jsonData.username).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'email' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('email');",
+							"    pm.expect(jsonData.email).to.be.a('string');",
+							"    pm.expect(jsonData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+							"});",
+							"",
+							"pm.test(\"The address contains the correct attributes\", function () {",
+							"    pm.expect(jsonData).to.have.property('address');",
+							"    pm.expect(jsonData.address).to.have.property('street').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('suite').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('city').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('zipcode').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('geo');",
+							"    pm.expect(jsonData.address.geo).to.have.property('lat').that.is.a('string');",
+							"    pm.expect(jsonData.address.geo).to.have.property('lng').that.is.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'phone' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('phone');",
+							"    pm.expect(jsonData.phone).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'website' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('website');",
+							"    pm.expect(jsonData.website).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'company' attribute contains the correct data\", function () {",
+							"    pm.expect(jsonData).to.have.property('company');",
+							"    pm.expect(jsonData.company).to.have.property('name').that.is.a('string');",
+							"    pm.expect(jsonData.company).to.have.property('catchPhrase').that.is.a('string');",
+							"    pm.expect(jsonData.company).to.have.property('bs').that.is.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'id' attribute is present and is a number\", function () {",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData.id).to.be.a('number');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"username\": \"{{$randomUserName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"address\": {\n        \"street\": \"{{$randomStreetAddress}}\",\n        \"suite\": \"Apt. {{$randomInt}}\",\n        \"city\": \"{{$randomCity}}\",\n        \"zipcode\": \"{{randomZipcode}}\",\n        \"geo\": {\n            \"lat\": \"{{$randomLatitude}}\",\n            \"lng\": \"{{$randomLongitude}}\"\n        }\n    },\n    \"phone\": \"{{$randomPhoneNumber}}\",\n    \"website\": \"{{$randomDomainName}}\",\n    \"company\": {\n        \"name\": \"{{$randomCompanyName}}\",\n        \"catchPhrase\": \"{{$randomCatchPhrase}}\",\n        \"bs\": \"{{$randomBs}}\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"var jsonData = pm.response.json();",
+							"",
+							"pm.test(\"Status code is 200\", function () {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"The 'name' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('name');",
+							"    pm.expect(jsonData.name).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'username' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('username');",
+							"    pm.expect(jsonData.username).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'email' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('email');",
+							"    pm.expect(jsonData.email).to.be.a('string');",
+							"    pm.expect(jsonData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/);",
+							"});",
+							"",
+							"pm.test(\"The address contains the correct attributes\", function () {",
+							"    pm.expect(jsonData).to.have.property('address');",
+							"    pm.expect(jsonData.address).to.have.property('street').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('suite').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('city').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('zipcode').that.is.a('string');",
+							"    pm.expect(jsonData.address).to.have.property('geo');",
+							"    pm.expect(jsonData.address.geo).to.have.property('lat').that.is.a('string');",
+							"    pm.expect(jsonData.address.geo).to.have.property('lng').that.is.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'phone' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('phone');",
+							"    pm.expect(jsonData.phone).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'website' attribute is present and is a string\", function () {",
+							"    pm.expect(jsonData).to.have.property('website');",
+							"    pm.expect(jsonData.website).to.be.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'company' attribute contains the correct data\", function () {",
+							"    pm.expect(jsonData).to.have.property('company');",
+							"    pm.expect(jsonData.company).to.have.property('name').that.is.a('string');",
+							"    pm.expect(jsonData.company).to.have.property('catchPhrase').that.is.a('string');",
+							"    pm.expect(jsonData.company).to.have.property('bs').that.is.a('string');",
+							"});",
+							"",
+							"pm.test(\"The 'id' attribute is present and is a number\", function () {",
+							"    pm.expect(jsonData).to.have.property('id');",
+							"    pm.expect(jsonData.id).to.be.a('number');",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"{{$randomFullName}}\",\n    \"username\": \"{{$randomUserName}}\",\n    \"email\": \"{{$randomEmail}}\",\n    \"address\": {\n        \"street\": \"{{$randomStreetAddress}}\",\n        \"suite\": \"Apt. {{$randomInt}}\",\n        \"city\": \"{{$randomCity}}\",\n        \"zipcode\": \"{{randomZipcode}}\",\n        \"geo\": {\n            \"lat\": \"{{$randomLatitude}}\",\n            \"lng\": \"{{$randomLongitude}}\"\n        }\n    },\n    \"phone\": \"{{$randomPhoneNumber}}\",\n    \"website\": \"{{$randomDomainName}}\",\n    \"company\": {\n        \"name\": \"{{$randomCompanyName}}\",\n        \"catchPhrase\": \"{{$randomCatchPhrase}}\",\n        \"bs\": \"{{$randomBs}}\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{base_url}}/users/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{randomId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete User",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const responseData = pm.response.json();",
+							"",
+							"pm.test(\"Response status code is 200\", function () {",
+							"    pm.expect(pm.response.code).to.equal(200);",
+							"})",
+							"",
+							"pm.test(\"Response schema is valid for an empty object\", function () {",
+							"    pm.expect(responseData).to.be.an('object');",
+							"});",
+							"",
+							"",
+							"pm.test(\"Response body should be an empty object\", function () {",
+							"  pm.expect(responseData).to.eql({});",
+							"});",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{base_url}}/users/:id",
+					"host": [
+						"{{base_url}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "{{randomId}}"
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "https://jsonplaceholder.typicode.com/",
+			"type": "string"
+		},
+		{
+			"key": "randomZipcode",
+			"value": ""
+		},
+		{
+			"key": "randomId",
+			"value": ""
+		}
+	]
+}
